@@ -4,6 +4,7 @@ from sqlalchemy.future import select
 from models import Provider, Game
 from schemas import ProviderCreate, ProviderRead, GameCreate, GameRead
 from database import get_db
+import uvicorn
 
 app = FastAPI(
     title="API for managing providers and games. CRUD",
@@ -65,7 +66,7 @@ async def update_provider(
     await db.refresh(provider)
     return provider
 
-    
+
 @app.delete(
     "/providers/{provider_id}",
     summary="Удалить провайдера",
@@ -151,3 +152,7 @@ async def delete_game(game_id: int, db: AsyncSession = Depends(get_db)):
     await db.delete(game)
     await db.commit()
     return {"message": "Игра удалена"}
+
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
