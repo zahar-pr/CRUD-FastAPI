@@ -1,15 +1,17 @@
+import uvicorn
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+
+from database import get_db
 from models import Provider, Game
 from schemas import ProviderCreate, ProviderRead, GameCreate, GameRead
-from database import get_db
-import uvicorn
 
 app = FastAPI(
     title="API for managing providers and games. CRUD",
     description="This API allows you to manage providers and games: create, read, update, delete.",
 )
+
 
 # ПРОВАЙДЕРЫ
 
@@ -52,9 +54,9 @@ async def read_provider(provider_id: int, db: AsyncSession = Depends(get_db)):
     tags=["Providers"],
 )
 async def update_provider(
-    provider_id: int,
-    provider_update: ProviderCreate,
-    db: AsyncSession = Depends(get_db),
+        provider_id: int,
+        provider_update: ProviderCreate,
+        db: AsyncSession = Depends(get_db),
 ):
     result = await db.execute(select(Provider).filter(Provider.id == provider_id))
     provider = result.scalars().first()
@@ -124,7 +126,7 @@ async def read_game(game_id: int, db: AsyncSession = Depends(get_db)):
     tags=["Games"],
 )
 async def update_game(
-    game_id: int, game_update: GameCreate, db: AsyncSession = Depends(get_db)
+        game_id: int, game_update: GameCreate, db: AsyncSession = Depends(get_db)
 ):
     result = await db.execute(select(Game).filter(Game.id == game_id))
     game = result.scalars().first()
